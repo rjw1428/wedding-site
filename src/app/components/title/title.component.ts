@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, OnInit, Attribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, OnInit, Attribute, Input } from '@angular/core';
 
 @Component({
   selector: 'app-title',
@@ -8,8 +8,14 @@ import { ChangeDetectionStrategy, Component, ContentChild, OnInit, Attribute } f
 })
 export class TitleComponent implements OnInit {
   titleArr: string[] = []
-  constructor(@Attribute('title') title: string) {
-    this.titleArr = title ? title.split(' ') : []
+  constructor(
+    @Attribute('title') title: string,
+    @Attribute('split') split: string
+  ) {
+    if (!title) {
+      console.error('Missing title')
+    }
+    this.titleArr = title && split == '' ? title.split(' ') : [title]
   }
 
   ngOnInit(): void {

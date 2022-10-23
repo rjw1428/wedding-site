@@ -1,0 +1,31 @@
+<p style="margin-bottom: 1em">The fun begins in...</p>
+<div style="display: flex; justify-content: center; position: relative; margin-bottom: 1em" *ngIf="target$ | async as target">
+  <div class="element">
+    <div style="display: flex;">
+      <app-dial [target]="target[0]"></app-dial>
+      <app-dial [target]="target[1]"></app-dial>
+      <app-dial [target]="target[2]"></app-dial>
+    </div>
+    <p>Days</p>
+  </div>
+
+  <div class="element">
+    <div style="display: flex;">
+      <app-dial [target]="target[3]"></app-dial>
+      <app-dial [target]="target[4]"></app-dial>
+    </div>
+    <p>Hours</p>
+  </div>
+
+  <div class="element">
+    <div style="display: flex;">
+      <app-dial [target]="target[5]"></app-dial>
+      <app-dial [target]="target[6]"></app-dial>
+    </div>
+    <p>Minutes</p>
+  </div>
+
+  <!-- <app-dial [target]="target[7]"></app-dial>
+    <app-dial [target]="target[8]"></app-dial>
+    <p>Seconds</p> -->
+</div>

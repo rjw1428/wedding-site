@@ -1,0 +1,33 @@
+:host {
+    background-color: white;
+    background-image: url('/assets/images/home1-small.jpg');
+    justify-content: space-between;
+    background-position: center;
+    background-size: cover;
+    animation: fadeIn 300ms forwards;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1, h3 {
+    color: white;
+    font-family: 'Allura', cursive;
+}
+
+.date {
+    margin-bottom: 80px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

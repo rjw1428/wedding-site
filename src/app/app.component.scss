@@ -1,0 +1,20 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+}
+
+.page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.full-page {
+    height: 100vh;
+    padding-top: 50px;
+}
+
+.half-page {
+    height: 50vh;
+}

@@ -1,0 +1,14 @@
+.dial-frame {
+    position: relative;
+    overflow: hidden;
+}
+
+.dial {
+    text-align: center;
+    position: relative;
+    transition: top 300ms ease-in-out;
+}
+
+p {
+    margin: 0;
+}

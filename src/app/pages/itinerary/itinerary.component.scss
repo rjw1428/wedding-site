@@ -1,0 +1,22 @@
+:host {
+    background-color: #303F77;
+    color: white;
+    gap: 20px;
+    align-items: stretch !important;
+}
+
+.card-content {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.event-section {
+    margin-bottom: 1em;
+}
+
+p {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.75em;
+    margin: 0;
+}

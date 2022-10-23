@@ -1,0 +1,5 @@
+<div class="dial-frame" [style]="{height: fontSize+'em'}" *ngIf="fontSize$ | async as fontSize">
+    <div class="dial" *ngIf="offset$ | async as offset" [style]="{lineHeight: fontSize+'em', top: offset}">
+        <p [style]="{fontSize: fontSize+'em'}" *ngFor="let num of numbers">{{num}}</p>
+    </div>
+</div>

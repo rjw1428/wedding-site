@@ -1,0 +1,7 @@
+<div class="scroll-indicator" 
+    *ngIf="show$ | async as show" 
+    [ngClass]="{'show': show === 'show'}" 
+    (click)="onClick()">
+  <p>Scroll for more info</p>
+  <div class="material-symbols-outlined">expand_more</div>
+</div>

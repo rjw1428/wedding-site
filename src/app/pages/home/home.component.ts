@@ -13,4 +13,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  getImage() {
+    const num = Math.ceil(Math.random()*4)
+    return {backgroundImage: `url('/assets/images/homepic${num}.jpg')`};
+  }
+
 }

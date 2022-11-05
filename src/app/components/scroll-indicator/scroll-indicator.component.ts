@@ -35,7 +35,7 @@ export class ScrollIndicatorComponent implements OnInit, OnDestroy {
   isNearBottom() {
     const currentY = window.pageYOffset + document.documentElement.clientHeight
     const totalY = document.body.clientHeight
-    const wiggleRoom = 500
+    const wiggleRoom = 300
     return totalY <= currentY + wiggleRoom
   }
 

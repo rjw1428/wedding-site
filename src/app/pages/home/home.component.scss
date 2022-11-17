@@ -1,20 +1,36 @@
 $letter-timing: 3000ms;
 
 :host {
-//   background-color: black;
   padding-top: 0 !important;
   justify-content: space-between;
+}
+
+.background-group {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
 }
 
 .background {
   background-position: center;
   background-size: cover;
   animation: fallIn 3000ms ease-out both;
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
   overflow: hidden;
   max-width: 500px;
+  height: 100vh;
+  width: 100%;
+  transition: top 3000ms;
+}
+
+.background:nth-of-type(even) {
+  margin-top: -250px;
+}
+
+.background:nth-of-type(odd) {
+  margin-top: 250px;
 }
 
 .title {
@@ -36,14 +52,16 @@ h3 {
 }
 
 @keyframes fallIn {
-    0% {
-        transform: scale(1.2);
-        opacity: 0;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  0% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    margin-top: 0;
+  }
 }
 
 @keyframes fadeIn {
@@ -57,8 +75,8 @@ h3 {
 }
 
 svg {
-    width: min(500px, 100%);
-    filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.6));
+  width: min(500px, 100%);
+  filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.6));
 }
 
 

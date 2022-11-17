@@ -1,7 +1,7 @@
-<!-- <h1>Amanda</h1>
-<h3>&</h3>
-<h1>Ryan</h1> -->
-<div class="background" [ngStyle]="getImage()"></div>
+<div class="background-group">
+    <div class="background" *ngFor="let image of image$ | async" [ngStyle]="getImage(image)"></div>
+    <!-- <div class="background" [ngStyle]="getImage()"></div> -->
+</div>
 <svg id="emJHGXAdxjg1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 50" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
     <g transform="translate(-121.799562-152.523774)">
         <path id="emJHGXAdxjg3" d="M129.081006,186.605968c-.591172,3.410605,2.364686,5.27507,4.456524,5.411494c1.110054.072395,4.054442-.050598,6.730261-1.409717c2.366623-1.20207,4.690542-3.426887,7.048584-5.866241c2.18748-2.262911,5.783134-6.485452,9.147552-10.74418c4.362909-5.522631,8.661314-11.596997,9.349168-12.376773c1.178862-1.336401,3.21254-3.049556.741915,2.068725s-6.186064,16.099533-6.186064,20.430706.922874,4.608788,2.487848,4.355009s6.176156-3.871791,8.587063-7.509299" transform="translate(.000002 0)" fill="none" stroke="#fff" stroke-linecap="round" stroke-dashoffset="100" stroke-dasharray="100" />

@@ -1,12 +1,43 @@
-h4 {
-    text-align: center;
-    font-family: 'Barlow Semi Condensed', sans-serif;
+a {
+    font-size: 3em;
+    margin-bottom: 1em;
 }
 
 .container {
-    margin-top: 4em;
+    margin-top: 2em;
     display: flex;
     flex-direction: column;
-    gap: 4em;
+    align-items: center;
+    gap: 1em;
     padding: 10px;
+}
+
+.img {
+    height: 300px;
+    width: auto;
+}
+
+@media screen and (max-width: 450px) {
+    :host {
+        justify-content: center;
+        margin-bottom: -100px;
+    }
+
+    .container {
+        position: absolute;
+        justify-content: center;
+        background: rgba(255, 255, 255, .65);
+        border-radius: 10px;
+        box-shadow: (0 0 10px white);
+    }
+
+    a {
+        margin: unset;
+        padding: 10px;
+        font-size: 2em;
+    }
+
+    .img {
+        height: 200px;
+    }
 }

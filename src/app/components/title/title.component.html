@@ -1,7 +1,13 @@
-<div class="container">
+<div class="container" *ngIf="titleArr.length; else noTitle">
     <div class="line"></div>
     <h3>
         <div *ngFor="let title of titleArr">{{title}}</div>
     </h3>
     <div class="line"></div>
 </div>
+
+<ng-template #noTitle>
+    <div class="container">
+        <div class="line double"></div>
+    </div>
+</ng-template>

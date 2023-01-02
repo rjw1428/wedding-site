@@ -12,10 +12,9 @@ export class TitleComponent implements OnInit {
     @Attribute('title') title: string,
     @Attribute('split') split: string
   ) {
-    if (!title) {
-      console.error('Missing title')
-    }
-    this.titleArr = title && split == '' ? title.split(' ') : [title]
+    this.titleArr = title
+      ? title && split == '' ? title.split(' ') : [title]
+      : []
   }
 
   ngOnInit(): void {

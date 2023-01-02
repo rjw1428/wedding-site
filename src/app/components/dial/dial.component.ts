@@ -31,7 +31,7 @@ export class DialComponent implements OnInit, OnChanges {
   }
 
   setFontSizeByScreen() {
-    const scalledSize = Math.floor(document.documentElement.clientWidth / 100)
+    const scalledSize = Math.floor(document.documentElement.clientWidth / 60)
     this.fontSize$.next(Math.min(10, scalledSize))
   }
 

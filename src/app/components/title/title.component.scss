@@ -24,3 +24,13 @@ h3 {
     width: min(100%, 500px);
     box-shadow: 2px 2px rgba(0, 0, 0, 0.25);
 }
+
+.double {
+    width: min(100%, 1000px);
+}
+
+@media screen and (max-width: 450px) {
+    .container {
+        padding: 30px 10px 0px;
+    }
+}

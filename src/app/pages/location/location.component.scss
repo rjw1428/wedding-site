@@ -1,3 +1,5 @@
+$blurWidth: 5px;
+
 :host {
     position: relative;
     display: flex;
@@ -26,4 +28,20 @@
 
 a:visited {
     color: black
+}
+
+.content-box {
+    position: relative; 
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px; 
+    padding: 20px 40px;
+    box-shadow: 0 0 10px white;
+    letter-spacing: 1.5px;
+}
+
+@media screen and (max-width: 450px) {
+    .content-box {
+        letter-spacing: normal;
+        padding: 20px;
+    }
 }

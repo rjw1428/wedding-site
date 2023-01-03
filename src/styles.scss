@@ -61,8 +61,13 @@ h4 {
 
 a:link {
   text-decoration: none;
+  transition: color .5s;
 }
 
 a:visited {
   color: rgb(75, 125, 150);
+}
+
+a:hover {
+  color: rgb(100, 177, 215);
 }

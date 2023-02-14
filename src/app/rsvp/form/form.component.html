@@ -1,1 +1,34 @@
-<h1>form works!</h1>
+<form [formGroup]="attendanceForm" (ngSubmit)="onSubmit()">
+  <div formArrayName="guests">
+    <div *ngFor="let guestFormGroup of guestsFormArray.controls; let i = index; trackBy: track">
+      <label><b>{{i== 0 ? 'You' : 'Guest'}}:</b></label>
+      <form [formGroupName]="i">
+        <label>First Name</label>
+        <input type="text" name="firstName" formControlName="firstName">
+        <label>Last Name</label>
+        <input type="text" name="lastName" formControlName="lastName">
+        <label>Attending</label>
+        <select formControlName="attendingWedding">
+          <option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</option>
+        </select>
+        <div *ngIf="guestFormGroup.get('attendingWedding')!.value === 'true'">
+          <label>Meal Selection</label>
+          <select formControlName="mealChoice">
+            <option *ngFor="let option of menuOptions" [value]="option.key">{{option.value}}</option>
+          </select>
+          <label>Brunch</label>
+          <select formControlName="attendingBrunch">
+            <option *ngFor="let option of burnchAttendanceOptoins" [value]="option.key">{{option.value}}</option>
+          </select>
+          <div *ngIf="!!guestFormGroup.get('attendingRehersal')">
+            <label>Rehersal</label>
+            <select formControlName="attendingRehersal">
+              <option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{option.value}}</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <button type="submit">Submit</button>
+</form>

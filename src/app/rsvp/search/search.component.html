@@ -1,3 +1,11 @@
 <h1>RSVP</h1>
+<label>Search For Name</label>
+<input type="text" [formControl]="name" #input>
+<button (click)="search$.next(input.value)">Search</button>
+<select [formControl]="selectedGuest">
+  <option *ngFor="let option of guest$ | async" [ngValue]="option">{{ option.displayName }}</option>
+</select>
 
-<app-form [guest]="guest"></app-form>
+<hr>
+
+<app-form *ngIf="!!selectedGuest.value" [selection]="selectedGuest.value"></app-form>

@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Firestore, setDoc, doc, updateDoc } from '@angular/fire/firestore';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject, filter, Subject } from 'rxjs';
 import { ATTENDING, BRUNCH, MENU, REHERSAL } from './form.options';
 import { GuestInfo, GuestInfoForm } from './guest-info';
 
@@ -9,19 +11,21 @@ import { GuestInfo, GuestInfoForm } from './guest-info';
   styleUrls: ['./form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormComponent implements OnInit {
-  @Input('guest') primaryGuest: GuestInfo
+export class FormComponent implements OnChanges {
+  @Input('selection') guestSelection: { id: string, primary: GuestInfo, secondary: GuestInfo }
   attendanceForm = this.fb.group({
     guests: this.fb.array([])
   })
 
   foodSelectionForm = this.fb.group({})
+  formComplete$ = new BehaviorSubject(false)
   readonly menuOptions = MENU
   readonly weddingAttendance = ATTENDING
   readonly burnchAttendanceOptoins = BRUNCH
   readonly rehersalAttedanceOptions = REHERSAL
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private firestore: Firestore
   ) {
 
   }
@@ -29,30 +33,27 @@ export class FormComponent implements OnInit {
     return <FormArray>this.attendanceForm.get('guests')
   }
 
-  get primaryGuestAttending() {
-    return this.guestsFormArray.at(0).get('attendingWedding')!
+  ngOnChanges(): void {
+    if (this.guestsFormArray.length) {
+      this.removeGuestForm(1)
+      this.removeGuestForm(0)
+    }
+
+    this.guestsFormArray.push(this.createGuestForm(this.guestSelection.primary, true))
+    const hasSecondary = !!this.guestSelection.secondary
+    const formTemplate = hasSecondary
+      ? this.guestSelection.secondary
+      : this.guestSelection.primary
+    const secondaryForm = this.createGuestForm(formTemplate, hasSecondary)
+    this.guestsFormArray.push(secondaryForm)
   }
 
-  ngOnInit(): void {
-    this.guestsFormArray.push(this.createGuestForm(this.primaryGuest, true))
-
-    // Listen if first person is attending and add/remove guest form
-    this.primaryGuestAttending.valueChanges.subscribe(value => {
-      if (value === 'true')
-        this.guestsFormArray.push(this.createGuestForm(this.primaryGuest, false))
-      else {
-        this.removeGuestForm()
-        this.clearRemovedOptions(this.primaryGuest.attendingRehersal !== undefined)
-      }
-    })
-  }
-
-  createGuestForm(guestInfo: GuestInfo, isPrimary: boolean) {
+  createGuestForm(guestInfo: GuestInfo, useDefaults: boolean) {
     const guestTemplate = Object.entries(guestInfo).reduce((form, [key, value]) => {
-      const defaultValue = isPrimary ? value : ''
-      return { 
-        ...form, 
-        [key]: new FormControl(defaultValue, [Validators.required]) 
+      const defaultValue = useDefaults ? value : ''
+      return {
+        ...form,
+        [key]: new FormControl(defaultValue, [Validators.required])
       }
     }, {} as GuestInfoForm)
     const formGroup = guestInfo && guestInfo.attendingRehersal
@@ -61,24 +62,29 @@ export class FormComponent implements OnInit {
     return new FormGroup<GuestInfoForm>(formGroup)
   }
 
-  removeGuestForm() {
-    this.guestsFormArray.removeAt(1, { emitEvent: true })
-  }
-
-  clearRemovedOptions(hasRehersalOption: boolean) {
-    const primaryGuestForm = this.guestsFormArray.at(0)
-    primaryGuestForm.patchValue({
-      mealChoice: null,
-      attendingBrunch: null,
-      attendingRehersal: hasRehersalOption ? null : undefined
-    })
+  removeGuestForm(index: number) {
+    this.guestsFormArray.removeAt(index, { emitEvent: true })
   }
 
   onSubmit() {
-    console.log("EVENT:", this.attendanceForm.value)
-  }
+    if (this.attendanceForm.invalid) {
+      console.log("INVALID")
+      console.log(this.attendanceForm)
+      return
+    }
 
-  track(i: number) {
-    return i
+    // SET STATE TO LOADING?
+
+    const { guests } = this.attendanceForm.value as { guests: GuestInfo[] }
+    const [primary, secondary] = guests
+    const update = {
+      primary,
+      secondary,
+      hasResponded: true
+    }
+    const val = doc(this.firestore, 'guests', this.guestSelection.id)
+    updateDoc(val, update)
+      .then(() => this.formComplete$.next(true))
+      .catch(err => console.log(err))
   }
 }

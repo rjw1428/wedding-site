@@ -1,6 +1,6 @@
-<form [formGroup]="attendanceForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="attendanceForm" (ngSubmit)="onSubmit()" *ngIf="!(formComplete$ | async); else complete">
   <div formArrayName="guests">
-    <div *ngFor="let guestFormGroup of guestsFormArray.controls; let i = index; trackBy: track">
+    <div *ngFor="let guestFormGroup of guestsFormArray.controls; let i = index;">
       <label><b>{{i== 0 ? 'You' : 'Guest'}}:</b></label>
       <form [formGroupName]="i">
         <label>First Name</label>
@@ -9,21 +9,21 @@
         <input type="text" name="lastName" formControlName="lastName">
         <label>Attending</label>
         <select formControlName="attendingWedding">
-          <option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</option>
+          <option *ngFor="let option of weddingAttendance" [ngValue]="option.key">{{option.value}}</option>
         </select>
-        <div *ngIf="guestFormGroup.get('attendingWedding')!.value === 'true'">
+        <div *ngIf="!!guestFormGroup.get('attendingWedding')!.value">
           <label>Meal Selection</label>
           <select formControlName="mealChoice">
-            <option *ngFor="let option of menuOptions" [value]="option.key">{{option.value}}</option>
+            <option *ngFor="let option of menuOptions" [ngValue]="option.key">{{option.value}}</option>
           </select>
           <label>Brunch</label>
           <select formControlName="attendingBrunch">
-            <option *ngFor="let option of burnchAttendanceOptoins" [value]="option.key">{{option.value}}</option>
+            <option *ngFor="let option of burnchAttendanceOptoins" [ngValue]="option.key">{{option.value}}</option>
           </select>
           <div *ngIf="!!guestFormGroup.get('attendingRehersal')">
             <label>Rehersal</label>
             <select formControlName="attendingRehersal">
-              <option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{option.value}}</option>
+              <option *ngFor="let option of rehersalAttedanceOptions" [ngValue]="option.key">{{option.value}}</option>
             </select>
           </div>
         </div>
@@ -32,3 +32,7 @@
   </div>
   <button type="submit">Submit</button>
 </form>
+
+<ng-template #complete>
+  <h1>Thank you for submitting</h1>
+</ng-template>

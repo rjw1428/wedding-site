@@ -1,0 +1,23 @@
+.search-result {
+    list-style: none; 
+    margin-bottom: unset;
+    padding-bottom: .5em;
+    transition: transform .25s;
+}
+
+.search-result:hover {
+    color: rgb(100, 177, 215);
+}
+
+.selected {
+    color: rgb(100, 177, 215);
+    transform: scale(1.1);
+}
+
+p {
+    font-size: 2em;
+}
+
+mat-form-field.mat-form-field-wrapper {
+    padding-bottom: unset;
+}

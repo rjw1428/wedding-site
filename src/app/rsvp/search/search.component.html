@@ -1,11 +1,103 @@
 <h1>RSVP</h1>
-<label>Search For Name</label>
-<input type="text" [formControl]="name" #input>
-<button (click)="search$.next(input.value)">Search</button>
-<select [formControl]="selectedGuest">
-  <option *ngFor="let option of guest$ | async" [ngValue]="option">{{ option.displayName }}</option>
-</select>
 
-<hr>
+<mat-stepper orientation="vertical" [linear]="true" #stepper>
+  <mat-step state="search" [stepControl]="selectedGuest">
+    <ng-template matStepLabel>Find your party</ng-template>
 
-<app-form *ngIf="!!selectedGuest.value" [selection]="selectedGuest.value"></app-form>
+    <section style="display: flex; justify-content: center; align-items: center;">
+      <mat-form-field style="max-width: 500px; width: 100%" appearance="outline">
+        <input matInput type="text" [formControl]="searchValue" #input placeholder="Enter your name" (keydown.enter)="search$.next(input.value)">
+        <button *ngIf="input.value" mat-icon-button matSuffix (click)="searchValue.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+      <div style="margin: 0 1em">
+        <button mat-stroked-button (click)="search$.next(input.value)" style="padding: 0.34em">Search</button>
+      </div>
+    </section>
+    
+    <ng-container *ngIf="guest$ | async as guests">
+      <div *ngIf="guests.length" @fade style="display: flex; flex-direction: column; align-items: center;">
+      <!-- extra ngIf to make this element animate out first -->
+      <p *ngIf="guests.length && !!guests[0].id">Is this you?</p>
+      <ul style="text-align: center; padding: 0">
+        <li *ngFor="let option of guests"
+          class="link search-result"
+          [ngClass]="{'selected': option.selected }"
+          (click)="onSelection(option)">{{ option.displayName }}
+        </li>
+      </ul>
+      </div>
+    </ng-container>
+  </mat-step>
+
+  <mat-step state="attending">
+    <ng-template matStepLabel>Attending Wedding</ng-template>
+    <p>Who will be attending</p>
+      <!-- [stepControl]="firstFormGroup" -->
+        <!-- <form>
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+      </mat-form-field>
+    </form> -->
+    <div *ngIf="selectedGuest.value">
+      <pre>{{ selectedGuest.value['primary'] | json }}</pre>
+      <pre>{{ selectedGuest.value['secondary'] | json }}</pre>
+    </div>
+    <p><small>Upate the names so that they appear as you would like on the seating card</small></p>
+  </mat-step>
+  <mat-step state="dinner">
+    <ng-template matStepLabel>Meal Choice</ng-template>
+    <p>Select your dinner option</p>
+    <p>Menu:</p>
+    <ul>
+      <li>
+        <p>Filet</p>
+        <p><small>Made with love</small></p>
+      </li>
+      <li>
+        <p>Branzino</p>
+        <p><small>Definitely the best fish option</small></p>
+      </li>
+      <li>
+        <p>Veggie</p>
+        <p><small>Mushroom something something</small></p>
+      </li>
+    </ul>
+      <!-- [stepControl]="firstFormGroup" -->
+        <!-- <form>
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+      </mat-form-field>
+    </form> -->
+    <div *ngIf="selectedGuest.value">
+      <pre>{{ selectedGuest.value['primary']['firstName'] }} {{selectedGuest.value['primary']['lastName']}}</pre>
+      <pre>{{ selectedGuest.value['secondary']['firstName'] }} {{selectedGuest.value['secondary']['lastName']}}</pre>
+    </div>
+  </mat-step>
+  <mat-step state="brunch">
+    <ng-template matStepLabel>Brunch</ng-template>
+    <p>Will you be attending brunch the morning after?</p>
+  </mat-step>
+  <mat-step state="rehersal">
+    <ng-template matStepLabel>Rehersal</ng-template>
+    <p>Congratulations, you are one of the privilaged few invited to the rehersal, you coming?</p>
+  </mat-step>
+
+
+  <ng-template matStepperIcon="search">
+    <mat-icon>supervisor_account</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="attending">
+    <mat-icon>nightlife</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="dinner">
+    <mat-icon>restaurant_menu</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="brunch">
+    <mat-icon>local_cafe</mat-icon>
+  </ng-template>
+  <ng-template matStepperIcon="rehersal">
+    <mat-icon>dinner_dining</mat-icon>
+  </ng-template>
+</mat-stepper>

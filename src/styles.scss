@@ -107,5 +107,6 @@ a:hover {
   color: rgb(100, 177, 215);
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.mat-form-field-wrapper {
+  padding: unset
+}

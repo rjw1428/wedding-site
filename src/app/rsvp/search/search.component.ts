@@ -2,11 +2,11 @@ import { animate, style, transition, trigger, query as queryAnmiate, stagger } f
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Firestore, collectionData, getDoc } from '@angular/fire/firestore'
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStepper } from '@angular/material/stepper';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { debounceTime, finalize, from, map, mergeMap, Observable, of, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
-import { GuestInfo } from '../form/guest-info';
+import { GuestInfo, GuestSearch } from '../../models/models';
 
 @Component({
   selector: 'app-search',
@@ -34,12 +34,14 @@ import { GuestInfo } from '../form/guest-info';
 })
 export class SearchComponent implements OnInit, OnDestroy {
   @ViewChild('stepper') stepper: MatStepper
+  readonly destroy$ = new Subject<void>()
   searchValue = new FormControl()
-  selectedGuest = new FormControl(null, Validators.required)
+  selectedGuest = new FormControl<GuestSearch | null>(null, Validators.required)
   selectionMade$ = this.selectedGuest.valueChanges.pipe(
     map(val => !!val ? 't' : 'f'),
     startWith('f')
   )
+  selectedGuest$ = this.selectedGuest.valueChanges
   search$ = new Subject<string>()
   guest$ = this.searchValue.valueChanges.pipe(
     switchMap(() => this.search$.pipe(
@@ -53,7 +55,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       ),
       map(query => query.docs.length
         ? query.docs.map(doc => {
-          const data = doc.data() as { primary: GuestInfo, secondary: GuestInfo }
+          const data = doc.data() as GuestSearch
           const displayName = data['secondary']
             ? `${data.primary.firstName} ${data.primary.lastName}/${data.secondary.firstName} ${data.secondary.lastName}`
             : `${data.primary.firstName} ${data.primary.lastName}/Guest`
@@ -61,18 +63,20 @@ export class SearchComponent implements OnInit, OnDestroy {
         })
         : [{ id: 0, displayName: "No Results Found" }]
       ),
-      switchMap(results => this.selectedGuest.valueChanges.pipe(
-        startWith(''),
-        map(selectedId => results.map(result => ({
+      switchMap(results => this.selectedGuest$.pipe(
+        startWith(null),
+        map(selected => results.map(result => ({
           ...result,
-          selected: result.id === selectedId
+          selected: result.id === selected?.id
         })))
       )),
       startWith([]),
       takeUntil(this.destroy$)
     ))
   )
-  destroy$ = new Subject<void>()
+  weddingAttendanceForm = new FormGroup({
+    
+  })
   constructor(private firestore: Firestore) { }
 
   ngOnInit(): void {
@@ -87,7 +91,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   onSelection(option: any) {
-    console.log(option)
     this.selectedGuest.setValue(option)
     this.stepper.next()
   }

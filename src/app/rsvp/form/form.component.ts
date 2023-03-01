@@ -3,7 +3,7 @@ import { Firestore, setDoc, doc, updateDoc } from '@angular/fire/firestore';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject, filter, Subject } from 'rxjs';
 import { ATTENDING, BRUNCH, MENU, REHERSAL } from './form.options';
-import { GuestInfo, GuestInfoForm } from './guest-info';
+import { GuestInfo, GuestInfoForm } from '../../models/models';
 
 @Component({
   selector: 'app-form',

@@ -40,9 +40,9 @@
         <mat-label>First Name</mat-label>
       </mat-form-field>
     </form> -->
-    <div *ngIf="selectedGuest.value">
-      <pre>{{ selectedGuest.value['primary'] | json }}</pre>
-      <pre>{{ selectedGuest.value['secondary'] | json }}</pre>
+    <div *ngIf="selectedGuest$ | async as selectedGuest">
+      <pre>{{ selectedGuest['primary'] | json }}</pre>
+      <pre>{{ selectedGuest['secondary'] | json }}</pre>
     </div>
     <p><small>Upate the names so that they appear as you would like on the seating card</small></p>
   </mat-step>

@@ -9,11 +9,7 @@ function generateName() {
   return { firstName, lastName };
 }
 function defaultParams() {
-  return {
-    mealChoice: null,
-    attendingWedding: null,
-    attendingBrunch: null,
-  }
+  return {}
 }
 
 function randomRehersal() {
@@ -29,13 +25,14 @@ function seedData() {
     let secondary = {...generateName(), ...defaultParams()}
 
     if (rehersalOption) {
-      primary = {...primary, attendingRehersal: null}
-      secondary = {...secondary, attendingRehersal: null}
+      primary = {...primary}
+      secondary = {...secondary}
     }
     const data = {
       primary,
       secondary,
-      hasResponded: false
+      hasResponded: false,
+      hasRehersalOption: rehersalOption
     }
     console.log(data)
     return addDoc(collectionRef, data)

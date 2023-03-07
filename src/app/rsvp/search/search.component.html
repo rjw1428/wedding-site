@@ -1,103 +1,215 @@
 <h1>RSVP</h1>
 
-<mat-stepper orientation="vertical" [linear]="true" #stepper>
-  <mat-step state="search" [stepControl]="selectedGuest">
-    <ng-template matStepLabel>Find your party</ng-template>
+<ng-container *ngIf="!(this.submissionResponse$ | async); else submissionResponse">
+  <mat-stepper orientation="vertical" [linear]="true" #stepper>
+    <mat-step state="search" [stepControl]="selectedGuest">
+      <ng-template matStepLabel>Find your party</ng-template>
 
-    <section style="display: flex; justify-content: center; align-items: center;">
-      <mat-form-field style="max-width: 500px; width: 100%" appearance="outline">
-        <input matInput type="text" [formControl]="searchValue" #input placeholder="Enter your name" (keydown.enter)="search$.next(input.value)">
-        <button *ngIf="input.value" mat-icon-button matSuffix (click)="searchValue.setValue('')">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-      <div style="margin: 0 1em">
-        <button mat-stroked-button (click)="search$.next(input.value)" style="padding: 0.34em">Search</button>
-      </div>
-    </section>
-    
-    <ng-container *ngIf="guest$ | async as guests">
-      <div *ngIf="guests.length" @fade style="display: flex; flex-direction: column; align-items: center;">
-      <!-- extra ngIf to make this element animate out first -->
-      <p *ngIf="guests.length && !!guests[0].id">Is this you?</p>
-      <ul style="text-align: center; padding: 0">
-        <li *ngFor="let option of guests"
-          class="link search-result"
-          [ngClass]="{'selected': option.selected }"
-          (click)="onSelection(option)">{{ option.displayName }}
-        </li>
-      </ul>
-      </div>
+      <section style="display: flex; justify-content: center; align-items: center;">
+        <mat-form-field style="max-width: 500px; width: 100%" appearance="outline">
+          <input matInput type="text" [formControl]="searchValue" #input placeholder="Enter your name" (keydown.enter)="search$.next(input.value)">
+          <button *ngIf="input.value" mat-icon-button matSuffix (click)="searchValue.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+        <div style="margin: 0 1em">
+          <button mat-stroked-button (click)="search$.next(input.value)" style="padding: 0.34em">Search</button>
+        </div>
+      </section>
+      
+      <ng-container *ngIf="guestSearch$ | async as guestSearch">
+        <div *ngIf="guestSearch.length" @fade style="display: flex; flex-direction: column; align-items: center;">
+        <!-- extra ngIf to make this element animate out first -->
+        <p *ngIf="guestSearch.length && guestSearch[0].id !== '0'">Is this you?</p>
+        <ul style="text-align: center; padding: 0">
+          <li *ngFor="let option of guestSearch"
+            class="link search-result"
+            [ngClass]="{'selected': option.selected }"
+            (click)="onSelection(option)">{{ option.displayName }}
+          </li>
+        </ul>
+        </div>
+      </ng-container>
+    </mat-step>
+
+    <mat-step state="attending" [stepControl]="weddingAttendanceForm" #step>
+      <ng-template matStepLabel>Attending Wedding</ng-template>
+      <ng-template matStepContent>
+        <p>Who will be attending</p>
+          <!-- [stepControl]="firstFormGroup" -->
+        <form [formGroup]="weddingAttendanceForm">
+          <form formGroupName="primary">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Attending</mat-label>
+              <mat-select formControlName="attendingWedding">
+                <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+
+          <form formGroupName="secondary">
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Attending</mat-label>
+              <mat-select formControlName="attendingWedding">
+                <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </form>
+        <p><small>Upate the names so that they appear as you would like on the seating card</small></p>
+        
+        <div *ngIf="bothDecline$ | async; else continue">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button type="submit" (click)="submit()">Submit</button>
+        </div>
+        <ng-template #continue>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button matStepperNext>Continue</button>
+        </ng-template>
+      </ng-template>
+    </mat-step>
+
+    <ng-container *ngIf="!(bothDecline$ | async)">
+      <mat-step state="dinner" [stepControl]="mealForm">
+        <ng-template matStepLabel>Meal Choice</ng-template>
+        <ng-template matStepContent>
+          <p>Select your dinner option</p>
+          <ul>
+            <li *ngFor="let option of menuOptions">
+              <p>{{option.value}}</p>
+              <p><small>{{option.description}}</small></p>
+            </li>
+          </ul>
+          <form [formGroup]="mealForm">
+            <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="primary">
+                <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="secondary">
+                <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Continue</button>
+          </div>
+        </ng-template>
+      </mat-step>
+      
+      <mat-step state="brunch" [stepControl]="brunchForm">
+        <ng-template matStepLabel>Brunch</ng-template>
+        <ng-template matStepContent>
+          <p>Will you be attending brunch the morning after?</p>
+          <form [formGroup]="brunchForm">
+            <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="primary">
+                <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="secondary">
+                <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Continue</button>
+          </div>
+        </ng-template>
+      </mat-step>
+      <mat-step state="rehersal" *ngIf="selectedGuest.value && selectedGuest.value.hasRehersalOption" [stepControl]="rehersalhForm">
+        <ng-template matStepLabel>Rehersal</ng-template>
+        <ng-template matStepContent>
+          <p>Congratulations, you are one of the privilaged few invited to the rehersal, you coming?</p>
+          <form [formGroup]="rehersalhForm">
+            <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="primary">
+                <mat-option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            
+            <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline">
+              <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+              <mat-select formControlName="secondary">
+                <mat-option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{ option.value}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </form>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext>Continue</button>
+          </div>
+        </ng-template>
+      </mat-step>
+
+      <mat-step state="confirm">
+        <ng-template matStepLabel>Confirm</ng-template>
+        <ng-template matStepContent>
+          <p>Does everything below look corred?</p>
+          <pre>
+              {{getAll('primary') | json }}
+          </pre>
+          <pre>
+              {{getAll('secondary') | json}}
+          </pre>
+
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext (click)="submit()">Submit</button>
+          </div>
+        </ng-template>
+      </mat-step>
     </ng-container>
-  </mat-step>
 
-  <mat-step state="attending">
-    <ng-template matStepLabel>Attending Wedding</ng-template>
-    <p>Who will be attending</p>
-      <!-- [stepControl]="firstFormGroup" -->
-        <!-- <form>
-      <mat-form-field appearance="outline">
-        <mat-label>First Name</mat-label>
-      </mat-form-field>
-    </form> -->
-    <div *ngIf="selectedGuest$ | async as selectedGuest">
-      <pre>{{ selectedGuest['primary'] | json }}</pre>
-      <pre>{{ selectedGuest['secondary'] | json }}</pre>
-    </div>
-    <p><small>Upate the names so that they appear as you would like on the seating card</small></p>
-  </mat-step>
-  <mat-step state="dinner">
-    <ng-template matStepLabel>Meal Choice</ng-template>
-    <p>Select your dinner option</p>
-    <p>Menu:</p>
-    <ul>
-      <li>
-        <p>Filet</p>
-        <p><small>Made with love</small></p>
-      </li>
-      <li>
-        <p>Branzino</p>
-        <p><small>Definitely the best fish option</small></p>
-      </li>
-      <li>
-        <p>Veggie</p>
-        <p><small>Mushroom something something</small></p>
-      </li>
-    </ul>
-      <!-- [stepControl]="firstFormGroup" -->
-        <!-- <form>
-      <mat-form-field appearance="outline">
-        <mat-label>First Name</mat-label>
-      </mat-form-field>
-    </form> -->
-    <div *ngIf="selectedGuest.value">
-      <pre>{{ selectedGuest.value['primary']['firstName'] }} {{selectedGuest.value['primary']['lastName']}}</pre>
-      <pre>{{ selectedGuest.value['secondary']['firstName'] }} {{selectedGuest.value['secondary']['lastName']}}</pre>
-    </div>
-  </mat-step>
-  <mat-step state="brunch">
-    <ng-template matStepLabel>Brunch</ng-template>
-    <p>Will you be attending brunch the morning after?</p>
-  </mat-step>
-  <mat-step state="rehersal">
-    <ng-template matStepLabel>Rehersal</ng-template>
-    <p>Congratulations, you are one of the privilaged few invited to the rehersal, you coming?</p>
-  </mat-step>
+    <ng-template matStepperIcon="search">
+      <mat-icon>supervisor_account</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="attending">
+      <mat-icon>nightlife</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="dinner">
+      <mat-icon>restaurant_menu</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="brunch">
+      <mat-icon>local_cafe</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="rehersal">
+      <mat-icon>dinner_dining</mat-icon>
+    </ng-template>
+    <ng-template matStepperIcon="confirm">
+      <mat-icon>recommend</mat-icon>
+    </ng-template>
+  </mat-stepper>
+</ng-container>
 
-
-  <ng-template matStepperIcon="search">
-    <mat-icon>supervisor_account</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="attending">
-    <mat-icon>nightlife</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="dinner">
-    <mat-icon>restaurant_menu</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="brunch">
-    <mat-icon>local_cafe</mat-icon>
-  </ng-template>
-  <ng-template matStepperIcon="rehersal">
-    <mat-icon>dinner_dining</mat-icon>
-  </ng-template>
-</mat-stepper>
+<ng-template #submissionResponse>
+  <h1>{{ submissionResponse$ | async }}</h1>
+  <a href="/">Go Home</a>
+</ng-template>

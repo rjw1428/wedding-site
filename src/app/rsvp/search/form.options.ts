@@ -28,3 +28,9 @@ export const REHERSAL = [
   { key: true, value: 'Fuck yes' },
   { key: false, value: 'Fuck no' },
 ]
+
+export const SUBMISSION_RESPONSES = {
+  success: `We can't wait to party with you!`,
+  notComint: `Well you can go fuck yourself`,
+  error: 'Oh shit, something went wrong'
+}

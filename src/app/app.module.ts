@@ -14,6 +14,8 @@ import { LinksComponent } from './pages/links/links.component';
 import { CardComponent } from './components/card/card.component';
 import { CountdownComponent } from './pages/countdown/countdown.component';
 import { DialComponent } from './components/dial/dial.component';
+import { HeaderComponent } from './pages/header/header.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -29,10 +31,12 @@ import { DialComponent } from './components/dial/dial.component';
     CardComponent,
     CountdownComponent,
     DialComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

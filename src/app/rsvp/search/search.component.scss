@@ -1,0 +1,72 @@
+:host::before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  background: url('/assets/images/rsvp_bg1.jpg');
+  background-position: center;
+  background-size: cover;
+  opacity: 0.5;
+  z-index: -1;
+}
+
+.search-result {
+  list-style: none;
+  margin-bottom: unset;
+  padding-bottom: .5em;
+  transition: transform .25s;
+  color: #03a9f4;;
+}
+
+.search-result:hover {
+  color: #0288D1;
+}
+
+.selected {
+  color: #40C4FF;
+  transform: scale(1.1);
+}
+
+p {
+  font-size: 2em;
+}
+
+mat-form-field.mat-form-field-wrapper {
+  padding-bottom: unset;
+}
+
+.search-container {
+  background-color: rgba(255,255,255,.9);
+  border-radius: 10px;
+}
+
+.search-attending {
+  width: 110px;
+}
+
+@media screen and (max-width: 330px) {
+    .search-attending {
+        width: 70px;
+    }
+  }
+
+.search-simple-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4em;
+  padding-bottom: 4em;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+  gap: 1em
+}
+
+.column {
+  flex-direction: column;
+}

@@ -1,0 +1,223 @@
+<h1 style="color: white; text-shadow: 2px 2px 2px black;">RSVP</h1>
+
+<div style="display: flex; justify-content: center;" *ngrxLet="isMobile$; let isMobile;">
+  <div style="height: fit-content; position: relative;" [ngStyle]="{'width': isMobile ? '100%' : '80%'}" *ngIf="!(this.submissionResponse$ | async); else submissionResponse">
+    <mat-stepper class="search-container" [orientation]="isMobile ? 'vertical' : 'horizontal'" [linear]="true" #stepper>
+      <mat-step state="search" [stepControl]="selectedGuest">
+        <ng-template matStepLabel>Find your party</ng-template>
+
+        <section style="display: flex; justify-content: center; align-items: center;">
+          <mat-form-field style="max-width: 500px; width: 100%" appearance="outline" hideRequiredMarker="true">
+            <input matInput type="text" [formControl]="searchValue" #input placeholder="Enter your name" (keydown.enter)="search$.next(input.value)">
+            <button *ngIf="input.value" mat-icon-button matSuffix (click)="searchValue.setValue('')">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+          <div style="margin: 0 1em">
+            <button mat-stroked-button (click)="search$.next(input.value)" style="padding: 0.34em">Search</button>
+          </div>
+        </section>
+        
+        <ng-container *ngIf="guestSearch$ | async as guestSearch">
+          <div *ngIf="guestSearch.length" @fade style="display: flex; flex-direction: column; align-items: center;">
+            <!-- extra ngIf to make this element animate out first -->
+            <p *ngIf="guestSearch.length && guestSearch[0].id !== '0'">Is this you?</p>
+            <ul style="text-align: center; padding: 0">
+              <li *ngFor="let option of guestSearch"
+                class="link search-result"
+                [ngClass]="{'selected': option.selected }"
+                (click)="onSelection(option)">{{ option.displayName }}
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+      </mat-step>
+
+      <mat-step state="attending" [stepControl]="weddingAttendanceForm" #step >
+        <ng-template matStepLabel>Attending Wedding</ng-template>
+        <ng-template matStepContent class="test">
+          <p style="text-align: center; margin-top: unset">Who will be attending</p>
+          <p style="text-align: center; margin-top: unset; padding-bottom: 1em">
+            <small>Update names so that they appear as you would like on the seating card</small>
+          </p>
+
+          <form [formGroup]="weddingAttendanceForm" style="display: flex; flex-direction: column; align-items: center; padding-bottom: 2em; gap: 2em">
+            <form formGroupName="primary" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
+              <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
+                <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName">
+                </mat-form-field>
+              </div>
+              <div style="display: flex;">
+                <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
+                  <mat-label>Attending</mat-label>
+                  <mat-select formControlName="attendingWedding">
+                    <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </form>
+
+            <form formGroupName="secondary" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
+              <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
+                <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName">
+                </mat-form-field>
+              </div>
+              <div style="display: flex;">
+                <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
+                  <mat-label>Attending</mat-label>
+                  <mat-select formControlName="attendingWedding">
+                    <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </form>
+          </form>
+          
+          <div class="action-buttons">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-stroked-button matStepperNext>Continue</button>
+          </div>
+        </ng-template>
+      </mat-step>
+
+      <ng-container *ngIf="!(bothDecline$ | async)">
+        <mat-step state="dinner" [stepControl]="mealForm">
+          <ng-template matStepLabel>Meal Choice</ng-template>
+          <ng-template matStepContent>
+            <p style="text-align: center">Select your dinner option</p>
+            <div style="display: flex; justify-content: space-around; padding-bottom: 2em; gap: 2em" [ngClass]="{'column': isMobile}">
+              <div *ngFor="let option of menuOptions" style="flex: 1 1 100%; display: flex; align-items: center; flex-direction: column;">
+                <p style="font-weight: bold">{{option.value}}</p>
+                <p style="text-align: center;"><small>{{option.description}}</small></p>
+              </div>
+            </div>
+            <form [formGroup]="mealForm" class="search-simple-form" [ngClass]="{'column': isMobile}">
+              <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="primary">
+                  <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="secondary">
+                  <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+            <div class="action-buttons">
+              <button mat-stroked-button matStepperPrevious>Back</button>
+              <button mat-stroked-button matStepperNext>Continue</button>
+            </div>
+          </ng-template>
+        </mat-step>
+        
+        <mat-step state="brunch" [stepControl]="brunchForm">
+          <ng-template matStepLabel>Brunch</ng-template>
+          <ng-template matStepContent>
+            <p style="text-align: center; padding-bottom: 1em">Will you be attending brunch the morning after?</p>
+            <form [formGroup]="brunchForm" class="search-simple-form" [ngClass]="{'column': isMobile}">
+              <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="primary">
+                  <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="secondary">
+                  <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+            <div class="action-buttons">
+              <button mat-stroked-button matStepperPrevious>Back</button>
+              <button mat-stroked-button matStepperNext>Continue</button>
+            </div>
+          </ng-template>
+        </mat-step>
+        <mat-step state="rehersal" *ngIf="selectedGuest.value && selectedGuest.value.hasRehersalOption" [stepControl]="rehersalhForm">
+          <ng-template matStepLabel>Rehersal</ng-template>
+          <ng-template matStepContent>
+            <p style="text-align: center; padding-bottom: 1em;">Will you be attending the rehersal dinner?</p>
+            <form [formGroup]="rehersalhForm" class="search-simple-form" [ngClass]="{'column': isMobile}">
+              <mat-form-field *ngIf="weddingAttendanceForm.get('primary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('primary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('primary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="primary">
+                  <mat-option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+              
+              <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-select formControlName="secondary">
+                  <mat-option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{ option.value}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </form>
+            <div class="action-buttons">
+              <button mat-stroked-button matStepperPrevious>Back</button>
+              <button mat-stroked-button matStepperNext>Continue</button>
+            </div>
+          </ng-template>
+        </mat-step>
+      </ng-container>
+
+      <mat-step state="confirm">
+        <ng-template matStepLabel>Confirm</ng-template>
+        <ng-template matStepContent>
+          <p style="text-align: center; padding-bottom: 1em;">Does everything below look correct?</p>
+          <div style="display: flex; justify-content: center; gap: 2em; padding-bottom: 2em;" [ngClass]="{'column': isMobile}">
+            <app-summary [guestData]="getAll('primary')"></app-summary>
+            <app-summary [guestData]="getAll('secondary')"></app-summary>
+          </div>
+          <div class="action-buttons">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-stroked-button matStepperNext color="primary" (click)="submit()">Submit</button>
+          </div>
+        </ng-template>
+      </mat-step>
+
+      <ng-template matStepperIcon="search">
+        <mat-icon>supervisor_account</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="attending">
+        <mat-icon>nightlife</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="dinner">
+        <mat-icon>restaurant_menu</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="brunch">
+        <mat-icon>local_cafe</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="rehersal">
+        <mat-icon>dinner_dining</mat-icon>
+      </ng-template>
+      <ng-template matStepperIcon="confirm">
+        <mat-icon>recommend</mat-icon>
+      </ng-template>
+    </mat-stepper>
+  </div>
+
+  <ng-template #submissionResponse>
+    <div style="display: flex; flex-direction: column; align-items: center; background-color: rgba(255,255,255,.7); padding: 2em; border-radius: 10px;" *ngrxLet="submissionResponse$; let submissionResponse">
+      <h3 style="padding-bottom: 1em;" *ngFor="let line of submissionResponse">{{ line }}</h3>
+      <a *ngIf="submissionResponse!.length === 1" class="link" style="margin: unset; padding-top: 1em" href="rsvp">Try Again</a>
+      <a class="link" style="margin: unset; padding-top: 1em" href="/">Go Home</a>
+    </div>
+  </ng-template>
+</div>

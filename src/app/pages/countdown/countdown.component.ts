@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BehaviorSubject, interval, map, startWith } from 'rxjs';
+import { interval, map, startWith } from 'rxjs';
+
+const SECOND = 1000
+const MINUTE = SECOND * 60
+const HOUR = MINUTE * 60
+const DAY = HOUR * 24
 
 @Component({
   selector: 'app-countdown',
@@ -19,12 +24,10 @@ export class CountdownComponent implements OnInit {
   }
 
   getDiff(millis: number) {
+    if (millis < 0) {
+      return [0, 0, 0, 0, 0, 0, 0, 0]
+    }
     let result = []
-    const SECOND = 1000
-    const MINUTE = SECOND * 60
-    const HOUR = MINUTE * 60
-    const DAY = HOUR * 24
-
     let rest = millis
     const days = Math.floor(rest / DAY)
     rest = rest % DAY

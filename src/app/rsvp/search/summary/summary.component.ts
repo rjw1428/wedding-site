@@ -7,7 +7,7 @@ import { ATTENDING, BRUNCH, MENU, REHERSAL } from '../form.options';
   template: `
   <div style="display: flex; align-items: center; flex-direction: column">
     <h4>{{guestData.firstName}} {{guestData.lastName}}</h4>
-    <p><span style="font-weight: bold">Attending Wedding: </span>{{ guestData.attendingWedding! | summary : ceremonyOptions }}</p>
+    <p><span style="font-weight: bold">Attending Wedding: </span>{{ guestData.attendingWedding! ? 'Yes' : 'No' }}</p>
       <ng-container *ngIf="guestData.attendingWedding">
         <p><span style="font-weight: bold">Meal Selection: </span>{{ guestData.mealChoice! | summary : menuOptions }}</p>
         <p><span style="font-weight: bold">Attending Brunch: </span>{{ guestData.attendingBrunch! | summary : brunchOptions }}</p>
@@ -18,6 +18,9 @@ import { ATTENDING, BRUNCH, MENU, REHERSAL } from '../form.options';
   styles: [
     `.bold {
       font-weight: bold
+    }
+    p {
+      font-size: 1.5em;
     }`
   ],
   changeDetection: ChangeDetectionStrategy.OnPush

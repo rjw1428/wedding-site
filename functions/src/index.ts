@@ -16,6 +16,5 @@ export const createSearch = functions.firestore.document('/guests/{documentId}')
       search.push(data.secondary.firstName.toLowerCase());
       search.push(data.secondary.lastName.toLowerCase());
     }
-    console.log(`handling for ${snapshot.id}`)
     return snapshot.ref.set({search}, {merge: true});
   });

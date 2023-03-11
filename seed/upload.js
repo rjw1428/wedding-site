@@ -20,7 +20,7 @@ const app = initializeApp({
   projectId: "wedding-site-daf66"
 })
 const firestore = getFirestore(app);
-connectFirestoreEmulator(firestore, 'localhost', 8080);
+// connectFirestoreEmulator(firestore, 'localhost', 8080);
 // const collectionRef = collection(firestore, 'guests');
 
 rl.on("line", async (row) => {

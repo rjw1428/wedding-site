@@ -1,5 +1,6 @@
 import { FormControl } from "@angular/forms";
 export interface GuestInfo {
+    prefix: string;
     firstName: string;
     lastName: string;
     attendingWedding: boolean | null;
@@ -13,7 +14,7 @@ type GuestWithoutRehersal = Record<keyof Omit<GuestInfo, 'attendingRehersal'>, F
 
 export type GuestInfoForm = GuestWithRehersal | GuestWithoutRehersal
 
-export type GuestInfoMin = Pick<GuestInfo, 'firstName'> & Pick<GuestInfo, 'lastName'>
+export type GuestInfoMin = Pick<GuestInfo, 'firstName'> & Pick<GuestInfo, 'lastName'> & Pick<GuestInfo, 'prefix'>
 
 export type GuestSearch = {
     id: string;

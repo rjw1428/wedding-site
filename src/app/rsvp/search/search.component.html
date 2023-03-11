@@ -86,15 +86,9 @@
           </form>
           
           <div class="action-buttons">
-            <ng-container *ngIf="bothDecline$ | async; else continue">
-              <button mat-stroked-button matStepperPrevious>Back</button>
-              <button mat-stroked-button type="submit" color="primary" (click)="submit()">Submit</button>
-            </ng-container>
-          </div>
-          <ng-template #continue>
             <button mat-stroked-button matStepperPrevious>Back</button>
             <button mat-stroked-button matStepperNext>Continue</button>
-          </ng-template>
+          </div>
         </ng-template>
       </mat-step>
 
@@ -181,22 +175,22 @@
             </div>
           </ng-template>
         </mat-step>
-
-        <mat-step state="confirm">
-          <ng-template matStepLabel>Confirm</ng-template>
-          <ng-template matStepContent>
-            <p style="text-align: center; padding-bottom: 1em;">Does everything below look corred?</p>
-            <div style="display: flex; justify-content: center; gap: 2em; padding-bottom: 2em;" [ngClass]="{'column': isMobile}">
-              <app-summary [guestData]="getAll('primary')"></app-summary>
-              <app-summary [guestData]="getAll('secondary')"></app-summary>
-            </div>
-            <div class="action-buttons">
-              <button mat-stroked-button matStepperPrevious>Back</button>
-              <button mat-stroked-button matStepperNext color="primary" (click)="submit()">Submit</button>
-            </div>
-          </ng-template>
-        </mat-step>
       </ng-container>
+
+      <mat-step state="confirm">
+        <ng-template matStepLabel>Confirm</ng-template>
+        <ng-template matStepContent>
+          <p style="text-align: center; padding-bottom: 1em;">Does everything below look correct?</p>
+          <div style="display: flex; justify-content: center; gap: 2em; padding-bottom: 2em;" [ngClass]="{'column': isMobile}">
+            <app-summary [guestData]="getAll('primary')"></app-summary>
+            <app-summary [guestData]="getAll('secondary')"></app-summary>
+          </div>
+          <div class="action-buttons">
+            <button mat-stroked-button matStepperPrevious>Back</button>
+            <button mat-stroked-button matStepperNext color="primary" (click)="submit()">Submit</button>
+          </div>
+        </ng-template>
+      </mat-step>
 
       <ng-template matStepperIcon="search">
         <mat-icon>supervisor_account</mat-icon>
@@ -220,7 +214,10 @@
   </div>
 
   <ng-template #submissionResponse>
-    <h1>{{ submissionResponse$ | async }}</h1>
-    <a href="/">Go Home</a>
+    <div style="display: flex; flex-direction: column; align-items: center; background-color: rgba(255,255,255,.7); padding: 2em; border-radius: 10px;" *ngrxLet="submissionResponse$; let submissionResponse">
+      <h3 style="padding-bottom: 1em;" *ngFor="let line of submissionResponse">{{ line }}</h3>
+      <a *ngIf="submissionResponse!.length === 1" class="link" style="margin: unset; padding-top: 1em" href="rsvp">Try Again</a>
+      <a class="link" style="margin: unset; padding-top: 1em" href="/">Go Home</a>
+    </div>
   </ng-template>
 </div>

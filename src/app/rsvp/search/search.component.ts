@@ -34,8 +34,8 @@ const formatQueryResponse = (docs: QueryDocumentSnapshot<DocumentData>[]) => doc
   ? docs.map(doc => {
     const data = doc.data() as GuestSearch
     const displayName = data['secondary']
-      ? `${data.primary.firstName} ${data.primary.lastName}/${data.secondary.firstName} ${data.secondary.lastName}`
-      : `${data.primary.firstName} ${data.primary.lastName}/Guest`
+      ? `${data.primary.prefix} ${data.primary.firstName} ${data.primary.lastName} / ${data.secondary.prefix} ${data.secondary.firstName} ${data.secondary.lastName}`
+      : `${data.primary.prefix} ${data.primary.firstName} ${data.primary.lastName} / Guest`
     return { ...data, id: doc.id, displayName }
   })
   : [{ id: '0', displayName: "No Results Found" }] as GuestSearch[]
@@ -113,7 +113,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   brunchForm = new FormGroup({})
   rehersalhForm = new FormGroup({})
   bothDecline$: Observable<boolean>
-  submissionResponse$ = new BehaviorSubject<string | null>(null)
+  submissionResponse$ = new BehaviorSubject<string[] | null>(null)
   isMobile$ = this.breakpointObserver.observe(this.BREAKPOINTS)
     .pipe(
       takeUntil(this.destroy$),
@@ -231,6 +231,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
 
 // TODO:
-// - Make entire RSVP form look good
 // - Set up login page
 // - Set up dashboard page
+// - On Submit loading spinner

@@ -30,7 +30,7 @@ export const REHERSAL = [
 ]
 
 export const SUBMISSION_RESPONSES = {
-  success: `We're excited to celebrate our special day with you`,
-  notComint: `Well you can go fuck yourself`,
-  error: 'Oh shit, something went wrong'
+  success: [`Thank you for responding.`,  `We're excited to celebrate our special day with you.`],
+  notComint: [`Thank you for responding.`,  `Your presence will be missed.`],
+  error: ['Oh no, something went wrong']
 }

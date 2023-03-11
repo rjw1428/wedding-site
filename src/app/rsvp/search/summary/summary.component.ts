@@ -6,7 +6,7 @@ import { ATTENDING, BRUNCH, MENU, REHERSAL } from '../form.options';
   selector: 'app-summary',
   template: `
   <div style="display: flex; align-items: center; flex-direction: column">
-    <h4>{{guestData.firstName}} {{guestData.lastName}}</h4>
+    <h4>{{guestData.firstName || 'Guest' }} {{guestData.lastName}}</h4>
     <p><span style="font-weight: bold">Attending Wedding: </span>{{ guestData.attendingWedding! ? 'Yes' : 'No' }}</p>
       <ng-container *ngIf="guestData.attendingWedding">
         <p><span style="font-weight: bold">Meal Selection: </span>{{ guestData.mealChoice! | summary : menuOptions }}</p>

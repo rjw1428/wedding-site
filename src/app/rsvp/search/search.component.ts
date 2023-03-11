@@ -5,14 +5,14 @@ import { Firestore, QuerySnapshot, updateDoc, doc, QueryDocumentSnapshot } from 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { collection, query, where, getDocs, DocumentData } from "firebase/firestore";
-import { BehaviorSubject, catchError, map, Observable, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, timeout } from 'rxjs';
 import { GuestInfo, GuestInfoForm, GuestInfoMin, GuestSearch } from '../../models/models';
 import { ATTENDING, BRUNCH, MENU, REHERSAL, SUBMISSION_RESPONSES } from './form.options';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 const INVALID = 'invalid search'
 const searchByName = async (name: string, firestore: Firestore) => {
-  const keywords = name.toLowerCase().split(' ')
+  const keywords = name.toLowerCase().trim().split(' ')
   if (keywords.length > 4) {
     throw new Error(INVALID)
   }
@@ -120,6 +120,9 @@ export class SearchComponent implements OnInit, OnDestroy {
       tap(result => console.log(result.breakpoints)),
       map(result => result.matches),
     )
+  loading$ = new Subject<boolean>()
+  onSubmit$ = new Subject<void>()
+  showLoader$ = this.loading$.pipe(timeout(3000))
   constructor(
     private firestore: Firestore,
     private breakpointObserver: BreakpointObserver
@@ -137,7 +140,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           return
         }
         this.weddingAttendanceForm.addControl('primary', this.createGuestAttendingForm(option.primary))
-        this.weddingAttendanceForm.addControl('secondary', this.createGuestAttendingForm(option.secondary))
+        this.weddingAttendanceForm.addControl('secondary', this.createGuestAttendingForm(option.secondary, !!option.secondary))
       }),
       shareReplay(1)
     )
@@ -187,6 +190,7 @@ export class SearchComponent implements OnInit, OnDestroy {
       hasResponded: true
     }
     try {
+      this.loading$.next(true)
       await updateDoc(doc(this.firestore, `guests`, this.selectedGuest.value!.id), data)
       const message = !data.primary.attendingWedding && !data.secondary.attendingWedding
         ? SUBMISSION_RESPONSES.notComint
@@ -195,13 +199,15 @@ export class SearchComponent implements OnInit, OnDestroy {
     } catch (err) {
       console.error("oh Shit", err)
       this.submissionResponse$.next(SUBMISSION_RESPONSES.error)
+    } finally {
+      this.loading$.next(false)
     }
   }
 
-  createGuestAttendingForm(guest?: GuestInfoMin) {
+  createGuestAttendingForm(guest?: GuestInfoMin, isRequired = true) {
     return new FormGroup({
-      firstName: new FormControl(guest?.firstName || '', Validators.required),
-      lastName: new FormControl(guest?.lastName || '', Validators.required),
+      firstName: new FormControl(guest?.firstName || '', isRequired ? Validators.required : []),
+      lastName: new FormControl(guest?.lastName || '', isRequired ? Validators.required : []),
       attendingWedding: new FormControl(null, Validators.required)
     })
   }
@@ -233,4 +239,4 @@ export class SearchComponent implements OnInit, OnDestroy {
 // TODO:
 // - Set up login page
 // - Set up dashboard page
-// - On Submit loading spinner
+// - FOOD DESCRIPTIONS

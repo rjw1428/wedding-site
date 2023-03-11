@@ -55,14 +55,18 @@
               </div>
               <div style="display: flex;">
                 <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
-                  <mat-label>Attending</mat-label>
+                  <mat-label>Attending?</mat-label>
                   <mat-select formControlName="attendingWedding">
                     <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
                   </mat-select>
                 </mat-form-field>
               </div>
             </form>
-
+            <ng-container *ngIf="selectedGuest$ | async as selectedGuest">
+              <p *ngIf="!selectedGuest.secondary">
+                You've been invited with a guest. Please enter their information below, or select "No" to decline.
+              </p>
+            </ng-container>
             <form formGroupName="secondary" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
               <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
                 <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
@@ -76,7 +80,7 @@
               </div>
               <div style="display: flex;">
                 <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
-                  <mat-label>Attending</mat-label>
+                  <mat-label>Attending?</mat-label>
                   <mat-select formControlName="attendingWedding">
                     <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
                   </mat-select>
@@ -112,7 +116,7 @@
               </mat-form-field>
               
               <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
-                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
                 <mat-select formControlName="secondary">
                   <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
                 </mat-select>
@@ -138,7 +142,7 @@
               </mat-form-field>
               
               <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
-                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
                 <mat-select formControlName="secondary">
                   <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
                 </mat-select>
@@ -163,7 +167,7 @@
               </mat-form-field>
               
               <mat-form-field *ngIf="weddingAttendanceForm.get('secondary')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
-                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
+                <mat-label>{{ weddingAttendanceForm.get('secondary')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('secondary')!.get('lastName')!.value }}</mat-label>
                 <mat-select formControlName="secondary">
                   <mat-option *ngFor="let option of rehersalAttedanceOptions" [value]="option.key">{{ option.value}}</mat-option>
                 </mat-select>
@@ -220,4 +224,12 @@
       <a class="link" style="margin: unset; padding-top: 1em" href="/">Go Home</a>
     </div>
   </ng-template>
+</div>
+
+<div class="loading" *ngIf="loading$ | async" >
+  <p style="font-weight: bold; font-size: 3em; padding-top: 40vh;">Sending Response
+    <span class="bounce ball1">.</span>
+    <span class="bounce ball2">.</span>
+    <span class="bounce ball3">.</span>
+  </p>
 </div>

@@ -23,6 +23,7 @@
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^14.2.0",
     "@angular/router": "^14.2.0",
+    "@ngrx/component": "^14.3.2",
     "firebase-admin": "^11.5.0",
     "firebase-functions": "^4.2.1",
     "rxjs": "~7.5.0",

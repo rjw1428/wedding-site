@@ -1,5 +1,5 @@
 import { FormControl } from "@angular/forms";
-interface GuestInfo {
+export interface GuestInfo {
     firstName: string;
     lastName: string;
     attendingWedding: boolean | null;

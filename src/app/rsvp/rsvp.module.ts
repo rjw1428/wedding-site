@@ -12,6 +12,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { LetModule } from '@ngrx/component';
+import { SummaryComponent } from './search/summary/summary.component';
+import { SummaryPipe } from './search/summary/summary.pipe';
+
 const routes: Routes = [
   {
     path: '',
@@ -22,12 +26,15 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     SearchComponent,
+    SummaryComponent,
+    SummaryPipe,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
+    LetModule,
     MatStepperModule,
     MatFormFieldModule,
     MatInputModule,

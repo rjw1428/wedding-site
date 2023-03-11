@@ -1,24 +1,37 @@
 import { animate, style, transition, trigger, query as queryAnmiate, stagger } from '@angular/animations';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Firestore, QuerySnapshot, updateDoc, doc } from '@angular/fire/firestore'
+import { Firestore, QuerySnapshot, updateDoc, doc, QueryDocumentSnapshot } from '@angular/fire/firestore'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { collection, query, where, getDocs, DocumentData } from "firebase/firestore";
-import { BehaviorSubject, map, Observable, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
-import { GuestInfoForm, GuestInfoMin, GuestSearch } from '../../models/models';
+import { BehaviorSubject, catchError, map, Observable, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap } from 'rxjs';
+import { GuestInfo, GuestInfoForm, GuestInfoMin, GuestSearch } from '../../models/models';
 import { ATTENDING, BRUNCH, MENU, REHERSAL, SUBMISSION_RESPONSES } from './form.options';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
+const INVALID = 'invalid search'
+const searchByName = async (name: string, firestore: Firestore) => {
+  const keywords = name.toLowerCase().split(' ')
+  if (keywords.length > 4) {
+    throw new Error(INVALID)
+  }
+  const request = await getDocs(
+    query(
+      collection(firestore, 'guests'),
+      where('hasResponded', '==', false),
+      where('search', "array-contains-any", keywords)
+    ));
+  return request.docs.length
+    ? request.docs.filter(doc => {
+      const searchTerms = doc.data()['search'] as string[];
+      return keywords.every(word => searchTerms.includes(word))
+    })
+    : [];
+}
 
-const searchByName = (name: string, firestore: Firestore) => getDocs(
-  query(
-    collection(firestore, 'guests'),
-    where('hasResponded', '==', false),
-    where('search', "array-contains-any", name.toLowerCase().split(' '))
-  ))
-
-const formatQueryResponse = (query: QuerySnapshot<DocumentData>) => query.docs.length
-  ? query.docs.map(doc => {
+const formatQueryResponse = (docs: QueryDocumentSnapshot<DocumentData>[]) => docs.length
+  ? docs.map(doc => {
     const data = doc.data() as GuestSearch
     const displayName = data['secondary']
       ? `${data.primary.firstName} ${data.primary.lastName}/${data.secondary.firstName} ${data.secondary.lastName}`
@@ -58,12 +71,9 @@ export class SearchComponent implements OnInit, OnDestroy {
   readonly weddingAttendance = ATTENDING
   readonly brunchAttendanceOptoins = BRUNCH
   readonly rehersalAttedanceOptions = REHERSAL
+  readonly BREAKPOINTS = [Breakpoints.XSmall, Breakpoints.HandsetPortrait]
   searchValue = new FormControl()
   selectedGuest = new FormControl<GuestSearch | null>(null, Validators.required)
-  selectionMade$ = this.selectedGuest.valueChanges.pipe(
-    map(val => !!val ? 't' : 'f'),
-    startWith('f')
-  )
   selectedGuest$ = this.searchValue.valueChanges.pipe(
     switchMap(() => this.selectedGuest.valueChanges.pipe(
       startWith(null),
@@ -89,7 +99,13 @@ export class SearchComponent implements OnInit, OnDestroy {
         })))
       )),
       startWith([]),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
+      catchError(err => {
+        const message = err.message === INVALID
+          ? "Please simplify your search"
+          : "An error has occurred, try again"
+        return of([{ id: '0', displayName: message }] as GuestSearch[])
+      })
     ))
   )
   weddingAttendanceForm = new FormGroup({})
@@ -98,7 +114,16 @@ export class SearchComponent implements OnInit, OnDestroy {
   rehersalhForm = new FormGroup({})
   bothDecline$: Observable<boolean>
   submissionResponse$ = new BehaviorSubject<string | null>(null)
-  constructor(private firestore: Firestore) { }
+  isMobile$ = this.breakpointObserver.observe(this.BREAKPOINTS)
+    .pipe(
+      takeUntil(this.destroy$),
+      tap(result => console.log(result.breakpoints)),
+      map(result => result.matches),
+    )
+  constructor(
+    private firestore: Firestore,
+    private breakpointObserver: BreakpointObserver
+  ) { }
 
   ngOnDestroy(): void {
     this.destroy$.next()
@@ -108,7 +133,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const onSelectedGuestChange = this.selectedGuest$.pipe(
       tap((option: GuestSearch | null) => {
-        if (option == null) {
+        if (option === null) {
           return
         }
         this.weddingAttendanceForm.addControl('primary', this.createGuestAttendingForm(option.primary))
@@ -136,7 +161,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.stepper.next()
   }
 
-  getAll(key: string): GuestInfoForm {
+  getAll(key: string): GuestInfo {
     const resp = []
     if (this.weddingAttendanceForm.get(key)!.value.attendingWedding) {
       resp.push({
@@ -203,3 +228,9 @@ export class SearchComponent implements OnInit, OnDestroy {
     })
   }
 }
+
+
+// TODO:
+// - Make entire RSVP form look good
+// - Set up login page
+// - Set up dashboard page

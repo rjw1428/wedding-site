@@ -10,27 +10,27 @@ export const MENU = [{
 },
 {
   key: 'veggie',
-  value: 'Mushroom Something',
-  description: 'Mushroom something something'
+  value: 'Vegitarian',
+  description: 'Seasonal dish made with fresh local vegitables'
 }]
 
 export const ATTENDING = [
-  { key: true, value: 'Yes, so pumped!' },
-  { key: false, value: 'No, hard pass' },
+  { key: true, value: 'Yes, Joyfully Accept' },
+  { key: false, value: 'No, Regretfully Decline' },
 ]
 
 export const BRUNCH = [
-  { key: true, value: 'Yes, I\'ll need a coffee' },
-  { key: false, value: 'No, I\'m getting the hell out of there' },
+  { key: true, value: 'Yes' },
+  { key: false, value: 'No' },
 ]
 
 export const REHERSAL = [
-  { key: true, value: 'Fuck yes' },
-  { key: false, value: 'Fuck no' },
+  { key: true, value: 'Yes' },
+  { key: false, value: 'No' },
 ]
 
 export const SUBMISSION_RESPONSES = {
-  success: `We can't wait to party with you!`,
+  success: `We're excited to celebrate our special day with you`,
   notComint: `Well you can go fuck yourself`,
   error: 'Oh shit, something went wrong'
 }

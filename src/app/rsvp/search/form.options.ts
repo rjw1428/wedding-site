@@ -1,17 +1,17 @@
 export const MENU = [{
   key: 'filet',
   value: 'Filet Mignon',
-  description: 'Made with love'
+  description: 'grilled fliet mignon with red wine demi-glace'
 },
 {
   key: 'branzino',
   value: 'Branzino',
-  description: 'Definitely the best fish option'
+  description: 'pan seared branzino lemon white wine sauce'
 },
 {
   key: 'veggie',
-  value: 'Vegitarian',
-  description: 'Seasonal dish made with fresh local vegitables'
+  value: 'Vegetarian',
+  description: 'seasonal dish made with fresh local vegetables'
 }]
 
 export const ATTENDING = [

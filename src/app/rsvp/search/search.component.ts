@@ -5,7 +5,7 @@ import { Firestore, QuerySnapshot, updateDoc, doc, QueryDocumentSnapshot } from 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { collection, query, where, getDocs, DocumentData } from "firebase/firestore";
-import { BehaviorSubject, catchError, map, Observable, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, timeout } from 'rxjs';
+import { BehaviorSubject, catchError, exhaustMap, map, Observable, of, shareReplay, startWith, Subject, switchMap, take, takeUntil, tap, timeout, timer } from 'rxjs';
 import { GuestInfo, GuestInfoForm, GuestInfoMin, GuestSearch } from '../../models/models';
 import { ATTENDING, BRUNCH, MENU, REHERSAL, SUBMISSION_RESPONSES } from './form.options';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -121,8 +121,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       map(result => result.matches),
     )
   loading$ = new Subject<boolean>()
-  onSubmit$ = new Subject<void>()
-  showLoader$ = this.loading$.pipe(timeout(3000))
   constructor(
     private firestore: Firestore,
     private breakpointObserver: BreakpointObserver
@@ -237,6 +235,4 @@ export class SearchComponent implements OnInit, OnDestroy {
 
 
 // TODO:
-// - Set up login page
-// - Set up dashboard page
-// - FOOD DESCRIPTIONS
+// - Loader should show up for a minimum of 3 seconds regardless of api delay

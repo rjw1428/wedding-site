@@ -4,7 +4,8 @@ import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent},
-  { path: 'rsvp', loadChildren: () => import('./rsvp/rsvp.module').then((m) => m.RsvpModule),}
+  { path: 'rsvp', loadChildren: () => import('./rsvp/rsvp.module').then((m) => m.RsvpModule)},
+  { path: 'admin', loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule)},
 ];
 
 @NgModule({

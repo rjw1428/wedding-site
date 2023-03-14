@@ -1,0 +1,13 @@
+<h1>Login</h1>
+<form [formGroup]="form" style="display: flex; align-items: center; flex-direction: column;">
+  <mat-form-field style="width: min(500px, 80%)">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" type="email" name="email">
+  </mat-form-field>
+
+  <mat-form-field style="width: min(500px, 80%)">
+    <mat-label>Password</mat-label>
+    <input matInput formControlName="password" type="password">
+  </mat-form-field>
+  <button mat-flat-button (click)="onClick()">Sign In</button>
+</form>

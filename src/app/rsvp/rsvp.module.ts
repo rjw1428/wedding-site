@@ -44,8 +44,8 @@ const routes: Routes = [
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideFirestore(() => {
       const fs = getFirestore()
-      // if ( !environment.production )
-      //   connectFirestoreEmulator( fs, 'localhost' , 8080 );
+      if ( !environment.production )
+        connectFirestoreEmulator( fs, 'localhost' , 8080 );
       return fs;
     }),
   ],

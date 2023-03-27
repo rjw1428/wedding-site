@@ -82,6 +82,9 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.step.interacted = false
         this.weddingAttendanceForm.removeControl('primary')
         this.weddingAttendanceForm.removeControl('secondary')
+        this.weddingAttendanceForm.removeControl('third')
+        this.weddingAttendanceForm.removeControl('fourth')
+        this.weddingAttendanceForm.removeControl('fifth')
       }),
     )),
     shareReplay(1)

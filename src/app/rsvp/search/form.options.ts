@@ -11,7 +11,7 @@ export const MENU = [{
 {
   key: 'veggie',
   value: 'Vegetarian',
-  description: 'seasonal dish made with fresh local vegetables'
+  description: 'roasted yellow bell pepper with quinoa salad, over wilted spinach and a tomato coulis'
 }]
 
 export const ATTENDING = [

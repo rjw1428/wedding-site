@@ -20,6 +20,9 @@ export type GuestSearch = {
     id: string;
     primary: GuestInfoMin;
     secondary: GuestInfoMin;
+    third?: GuestInfoMin;
+    fourth?: GuestInfoMin;
+    fifth?: GuestInfoMin;
     hasResponded: boolean;
     hasRehersalOption: boolean;
     selected?: boolean;

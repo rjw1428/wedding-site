@@ -11,7 +11,7 @@ import { ATTENDING, BRUNCH, MENU, REHERSAL } from '../form.options';
       <ng-container *ngIf="guestData.attendingWedding">
         <p><span style="font-weight: bold">Meal Selection: </span>{{ guestData.mealChoice! | summary : menuOptions }}</p>
         <p><span style="font-weight: bold">Attending Brunch: </span>{{ guestData.attendingBrunch! | summary : brunchOptions }}</p>
-        <p *ngIf="guestData.attendingRehersal !== undefined"><span style="font-weight: bold">Attending Rehersal: </span>{{ guestData.attendingRehersal! | summary : rehersalOptions }}</p>
+        <p *ngIf="guestData.attendingRehersal !== undefined && guestData.attendingRehersal !== null"><span style="font-weight: bold">Attending Rehersal: </span>{{ guestData.attendingRehersal! | summary : rehersalOptions }}</p>
       </ng-container>
   </div>
   `,

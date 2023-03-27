@@ -64,8 +64,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             responseCount: data.hasResponded ? 1 : 0,
             primaryAttending: data.primary.attendingWedding,
             secondaryAttending: data.secondary?.attendingWedding,
-            attendingCount: +(data.primary.attendingWedding || 0) + +(data.secondary?.attendingWedding || 0),
-            brunch: +(data.primary.attendingBrunch || 0) + +(data.secondary?.attendingBrunch || 0),
+            attendingCount: this.getAttendanceCount('attendingWedding', data),
+            brunch: this.getAttendanceCount('attendingBrunch', data),
             rehersal: data.hasRehersalOption ? +(data.primary.attendingRehersal || 0) + +(data.secondary?.attendingRehersal || 0) : undefined,
             filet: this.getMealCount(data, 'filet'),
             fish: this.getMealCount(data, 'branzino'),
@@ -99,9 +99,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.destroy$.complete()
   }
 
-  getMealCount(data: { primary: { mealChoice?: string }, secondary: { mealChoice?: string } }, match: string) {
+  getAttendanceCount(key: string, {primary, secondary, third, fourth, fifth}: {primary: any, secondary: any, third?: any, fourth?: any, fifth?: any}) {
+    return +(primary?.[key] || 0) + +(secondary?.[key] || 0) + +(third?.[key] || 0) + +(fourth?.[key] || 0) + +(fifth?.[key] || 0)
+  }
+
+  getMealCount(data: { primary: { mealChoice?: string }, secondary: { mealChoice?: string },  third?: { mealChoice?: string },  fourth?: { mealChoice?: string },  fifth?: { mealChoice?: string } }, match: string) {
     const p = +(data.primary.mealChoice === match)
     const s = +(data.secondary?.mealChoice === match)
-    return p + s
+    const t = +(data.third?.mealChoice === match)
+    const f = +(data.fourth?.mealChoice === match)
+    const fi = +(data.fifth?.mealChoice === match)
+    return p + s + t + f + fi
   }
 }

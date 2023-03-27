@@ -11,6 +11,7 @@ import { ATTENDING, BRUNCH, MENU, REHERSAL, SUBMISSION_RESPONSES } from './form.
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 const INVALID = 'invalid search'
+const COLLECTION = 'guests'
 const searchByName = async (name: string, firestore: Firestore) => {
   const keywords = name.toLowerCase().trim().split(' ')
   if (keywords.length > 4) {
@@ -18,7 +19,7 @@ const searchByName = async (name: string, firestore: Firestore) => {
   }
   const request = await getDocs(
     query(
-      collection(firestore, 'guests'),
+      collection(firestore, COLLECTION),
       where('hasResponded', '==', false),
       where('search', "array-contains-any", keywords)
     ));
@@ -139,6 +140,12 @@ export class SearchComponent implements OnInit, OnDestroy {
         }
         this.weddingAttendanceForm.addControl('primary', this.createGuestAttendingForm(option.primary))
         this.weddingAttendanceForm.addControl('secondary', this.createGuestAttendingForm(option.secondary, !!option.secondary))
+
+        if (option.third) {
+          this.weddingAttendanceForm.addControl('third', this.createGuestAttendingForm(option.third, !!option.secondary))
+          this.weddingAttendanceForm.addControl('fourth', this.createGuestAttendingForm(option.fourth, !!option.secondary))
+          this.weddingAttendanceForm.addControl('fifth', this.createGuestAttendingForm(option.fifth, !!option.secondary))
+        }
       }),
       shareReplay(1)
     )
@@ -182,9 +189,18 @@ export class SearchComponent implements OnInit, OnDestroy {
       return
     }
     console.info("SUBMITTED")
+
+    const kids = this.weddingAttendanceForm.get('third')
+      ? {
+        third: this.getAll('third'),
+        fourth: this.getAll('fourth'),
+        fifth: this.getAll('fifth'),
+      }
+      : {}
     const data = {
       primary: this.getAll('primary'),
       secondary: this.getAll('secondary'),
+      ...kids,
       hasResponded: true
     }
     try {
@@ -210,8 +226,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     })
   }
 
-  createSimpleResponseForm(defaultValue?: string) {
-    return new FormControl(defaultValue || null, Validators.required)
+  createSimpleResponseForm(required = true, defaultValue?: string) {
+    return new FormControl(defaultValue || null, required ? Validators.required : [])
   }
 
   updateFormControls(guestInfo: { [key: string]: GuestInfoForm }, selectedGuest: GuestSearch | null) {
@@ -220,7 +236,8 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.mealForm.addControl(key, this.createSimpleResponseForm())
         this.brunchForm.addControl(key, this.createSimpleResponseForm())
         if (selectedGuest?.hasRehersalOption) {
-          this.rehersalhForm.addControl(key, this.createSimpleResponseForm())
+          // kids are not invited to the rehersal
+          this.rehersalhForm.addControl(key, this.createSimpleResponseForm(key === 'primary' || key === 'secondary'))
         }
         return
       }
@@ -236,3 +253,4 @@ export class SearchComponent implements OnInit, OnDestroy {
 
 // TODO:
 // - Loader should show up for a minimum of 3 seconds regardless of api delay
+// - Should refactor from primary/secondary/kids -> to an array of guests per invite

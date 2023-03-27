@@ -87,6 +87,71 @@
                 </mat-form-field>
               </div>
             </form>
+
+            <ng-container *ngIf="weddingAttendanceForm.get('third')">
+              <form formGroupName="third" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
+                <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                  </mat-form-field>
+                </div>
+                <div style="display: flex;">
+                  <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
+                    <mat-label>Attending?</mat-label>
+                    <mat-select formControlName="attendingWedding">
+                      <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </form>
+
+              <form formGroupName="fourth" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
+                <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                  </mat-form-field>
+                </div>
+                <div style="display: flex;">
+                  <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
+                    <mat-label>Attending?</mat-label>
+                    <mat-select formControlName="attendingWedding">
+                      <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </form>
+
+              <form formGroupName="fifth" style="display: flex; width: 100%; gap: 2em; justify-content: center; align-items: center;">
+                <div style="display: flex; flex-basis: 100%; gap: 1em; max-width: 500px;" [ngClass]="{'column': isMobile}">
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                  </mat-form-field>
+                  <mat-form-field appearance="outline" style="flex: 1 1 100%;" hideRequiredMarker="true">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                  </mat-form-field>
+                </div>
+                <div style="display: flex;">
+                  <mat-form-field appearance="outline" class="search-attending" hideRequiredMarker="true">
+                    <mat-label>Attending?</mat-label>
+                    <mat-select formControlName="attendingWedding">
+                      <mat-option *ngFor="let option of weddingAttendance" [value]="option.key">{{option.value}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </form>
+            </ng-container>
           </form>
           
           <div class="action-buttons">
@@ -121,6 +186,29 @@
                   <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <ng-container *ngIf="weddingAttendanceForm.get('third')">
+                <mat-form-field *ngIf="weddingAttendanceForm.get('third')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('third')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('third')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="third">
+                    <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="weddingAttendanceForm.get('fourth')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('fourth')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('fourth')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="fourth">
+                    <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="weddingAttendanceForm.get('fifth')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('fifth')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('fifth')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="fifth">
+                    <mat-option *ngFor="let option of menuOptions" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
             </form>
             <div class="action-buttons">
               <button mat-stroked-button matStepperPrevious>Back</button>
@@ -147,6 +235,29 @@
                   <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
                 </mat-select>
               </mat-form-field>
+
+              <ng-container *ngIf="weddingAttendanceForm.get('third')">
+                <mat-form-field *ngIf="weddingAttendanceForm.get('third')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('third')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('third')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="third">
+                    <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="weddingAttendanceForm.get('fourth')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('fourth')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('fourth')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="fourth">
+                    <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="weddingAttendanceForm.get('fifth')!.get('attendingWedding')!.value" appearance="outline" [ngStyle]="{'width': isMobile ? '50%' : '25%'}" hideRequiredMarker="true">
+                  <mat-label>{{ weddingAttendanceForm.get('fifth')!.get('firstName')!.value || 'TBD' }} {{ weddingAttendanceForm.get('fifth')!.get('lastName')!.value }}</mat-label>
+                  <mat-select formControlName="fifth">
+                    <mat-option *ngFor="let option of brunchAttendanceOptoins" [value]="option.key">{{ option.value}}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
             </form>
             <div class="action-buttons">
               <button mat-stroked-button matStepperPrevious>Back</button>
@@ -188,6 +299,11 @@
           <div style="display: flex; justify-content: center; gap: 2em; padding-bottom: 2em;" [ngClass]="{'column': isMobile}">
             <app-summary [guestData]="getAll('primary')"></app-summary>
             <app-summary [guestData]="getAll('secondary')"></app-summary>
+          </div>
+          <div *ngIf="weddingAttendanceForm.get('third')" style="display: flex; justify-content: center; gap: 2em; padding-bottom: 2em;" [ngClass]="{'column': isMobile}">
+            <app-summary [guestData]="getAll('third')"></app-summary>
+            <app-summary [guestData]="getAll('fourth')"></app-summary>
+            <app-summary [guestData]="getAll('fifth')"></app-summary>
           </div>
           <div class="action-buttons">
             <button mat-stroked-button matStepperPrevious>Back</button>

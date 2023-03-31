@@ -31,6 +31,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         ? data.sort((a: any, b: any) => {
           const one = a[sort.active]
           const two = b[sort.active]
+          if (b[sort.active] === undefined)
+            return -1
           if (typeof one === 'string') {
             if (sort.direction === 'asc')
               return one.localeCompare(two)
